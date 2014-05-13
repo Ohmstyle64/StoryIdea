@@ -7,6 +7,8 @@ import com.aneebo.storyidea.StoryIdea;
 public class DesktopLauncher {
 	public static void main (String[] arg) {
 		LwjglApplicationConfiguration config = new LwjglApplicationConfiguration();
+		config.title = StoryIdea.TITLE +" v"+ StoryIdea.VERSION;
+		config.vSyncEnabled = true;
 		new LwjglApplication(new StoryIdea(), config);
 	}
 }
