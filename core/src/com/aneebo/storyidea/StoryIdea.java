@@ -1,6 +1,6 @@
 package com.aneebo.storyidea;
 
-import com.aneebo.storyidea.screens.Splash;
+import com.aneebo.storyidea.screens.SendStory;
 import com.badlogic.gdx.Game;
 
 public class StoryIdea extends Game {
@@ -11,6 +11,6 @@ public class StoryIdea extends Game {
 	@Override
 	public void create () {
 		//Start the app by loading the Splash Screen.
-		setScreen(new Splash());
+		setScreen(new SendStory());
 	}
 }
