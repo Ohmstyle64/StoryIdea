@@ -68,21 +68,37 @@ public class SendStory implements Screen {
 		sendButton.addListener(new ClickListener() {
 			@Override
 			public void clicked(InputEvent event, float x, float y) {
-				String oldText = textArea.getText().toString();
-				textArea.setText(oldText+"\n"+messageText.getText());
-				calcScrollPosition();
+				sendMessageToNextPeer(messageText.getText());
 			}
 		});
-		
+
 		table.add(scrollPane).colspan(2).fillX().expandY().top().row();
 		table.add(messageText).fillX().expandX();
 		table.add(sendButton);
 		stage.addActor(table);
 	}
+	
+	/**
+	 * Send message to next person in circle and send to screen
+	 * @param str
+	 */
+	public void sendMessageToNextPeer(String str) {
+		sendMessageToScreen(str);
+		sendScrollBarToBottom();
+		
+		//TODO: Implement a NextPeer connection to the next participant in the tournament
+		
+		
+		//Clear message text
+		messageText.setText("");
+	}
 
-	private void calcScrollPosition() {
-		scrollPane.validate();
-		scrollPane.scrollTo(scrollPane.getMaxX(), -scrollPane.getMaxY(), scrollPane.getWidth(), scrollPane.getHeight());
+	/**
+	 * Send text to the screen
+	 * @param str
+	 */
+	public void sendMessageToScreen(String str) {
+		textArea.setText(textArea.getText().toString()+"\n"+str);
 	}
 
 	@Override
@@ -107,5 +123,13 @@ public class SendStory implements Screen {
 		stage.dispose();
 		skin.dispose();
 	}
-
+	/**
+	 * Send the scroll bar to the bottom of the screen.
+	 * Is called everytime there is text entered to the screen
+	 */
+	private void sendScrollBarToBottom() {
+		scrollPane.validate();
+		scrollPane.scrollTo(scrollPane.getMaxX(), -scrollPane.getMaxY(), scrollPane.getWidth(), scrollPane.getHeight());
+	}
+	
 }
