@@ -1,11 +1,14 @@
 package com.aneebo.storyidea.screens;
 
 import com.aneebo.storyidea.StoryIdea;
+import com.badlogic.gdx.Application.ApplicationType;
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.Input.Keys;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
+import com.badlogic.gdx.scenes.scene2d.InputListener;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.ScrollPane;
@@ -71,6 +74,20 @@ public class SendStory implements Screen {
 				sendMessageToNextPeer(messageText.getText());
 			}
 		});
+		// TODO: Temporary code for desktop. Need to REMOVE
+		if(Gdx.app.getType() == ApplicationType.Desktop)
+		{
+			messageText.addListener(new InputListener() {
+				@Override
+				public boolean keyDown(InputEvent event, int keycode) {
+					if(keycode == Keys.ENTER) {
+						sendMessageToNextPeer(messageText.getText());
+						return true;
+					}
+					return false;
+				}
+			});
+		}
 
 		table.add(scrollPane).colspan(2).fillX().expandY().top().row();
 		table.add(messageText).fillX().expandX();
