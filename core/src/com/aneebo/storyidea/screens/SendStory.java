@@ -1,9 +1,7 @@
 package com.aneebo.storyidea.screens;
 
 import com.aneebo.storyidea.StoryIdea;
-import com.badlogic.gdx.Application.ApplicationType;
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.Input.Keys;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
@@ -14,8 +12,10 @@ import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.ScrollPane;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
+import com.badlogic.gdx.scenes.scene2d.ui.TextArea;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.ui.TextField;
+import com.badlogic.gdx.scenes.scene2d.ui.TextField.TextFieldFilter;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
 
@@ -25,10 +25,11 @@ public class SendStory implements Screen {
 	private Skin skin;
 	private TextureAtlas atlas;
 	private Table table;
-	private Label textArea;
 	private ScrollPane scrollPane;
-	private TextField messageText;
 	private TextButton sendButton;
+	private TextArea storyArea;
+	private int messageLength = 0;
+	private String messageTyped;
 	
 	@Override
 	public void render(float delta) {
@@ -53,7 +54,6 @@ public class SendStory implements Screen {
 
 		stage = new Stage(new ScreenViewport());
 		Gdx.input.setInputProcessor(stage);
-		
 		atlas = new TextureAtlas("ui/atlas.pack");
 		skin = new Skin(Gdx.files.internal("ui/menuSkin.json"), atlas);
 		
@@ -61,37 +61,52 @@ public class SendStory implements Screen {
 		table.setFillParent(true);
 		table.debug();
 		
-		textArea = new Label("Current Story", skin);
-		textArea.setWrap(true);
-		scrollPane = new ScrollPane(textArea, skin);
+		storyArea = new TextArea("Current Story", skin);
+		messageLength = (storyArea.getText() == "" ? 0 : storyArea.getText().length());
+		messageTyped = storyArea.getText();
+		storyArea.setFillParent(true);
+		scrollPane = new ScrollPane(storyArea, skin);
 		scrollPane.setScrollingDisabled(true, false);
 		scrollPane.setFadeScrollBars(false);
-		messageText = new TextField("Continue the story", skin);
 		sendButton = new TextButton("Send", skin);
 		sendButton.addListener(new ClickListener() {
 			@Override
 			public void clicked(InputEvent event, float x, float y) {
-				sendMessageToNextPeer(messageText.getText());
+				sendMessageToNextPeer(storyArea.getText());
 			}
 		});
-		// TODO: Temporary code for desktop. Need to REMOVE
-		if(Gdx.app.getType() == ApplicationType.Desktop)
-		{
-			messageText.addListener(new InputListener() {
-				@Override
-				public boolean keyDown(InputEvent event, int keycode) {
-					if(keycode == Keys.ENTER) {
-						sendMessageToNextPeer(messageText.getText());
-						return true;
-					}
+		storyArea.setTextFieldFilter(new TextFieldFilter() {
+			
+			@Override
+			public boolean acceptChar(TextField textField, char c) {
+				if(c == 'a') {
+					Gdx.app.log(StoryIdea.TITLE, "Cur Length: "+storyArea.getText().length());		
 					return false;
 				}
-			});
-		}
-
-		table.add(scrollPane).colspan(2).fillX().expandY().top().row();
-		table.add(messageText).fillX().expandX();
-		table.add(sendButton);
+				return true;
+			}
+		});
+		storyArea.addListener(new InputListener() {
+			@Override
+			public boolean keyTyped(InputEvent event, char character) {
+				switch(character) {
+				case 13 :
+					sendMessageToNextPeer(storyArea.getText());
+					return true;
+				case 8 :
+					if(messageLength >= storyArea.getText().length()) {
+						storyArea.setText(messageTyped);
+						return true;
+					}
+				}
+				return false;
+			}
+		});
+		
+		
+		table.add(new Label("The Story Continues", skin)).colspan(3).center().row();
+		table.add(scrollPane).colspan(3).expandX().fillX().expandY().fillY().top().pad(10).row();
+		table.add(sendButton).colspan(3).bottom().center();
 		stage.addActor(table);
 	}
 	
@@ -100,14 +115,10 @@ public class SendStory implements Screen {
 	 * @param str
 	 */
 	public void sendMessageToNextPeer(String str) {
-		sendMessageToScreen(str);
-		sendScrollBarToBottom();
+//		sendScrollBarToBottom();
 		
 		//TODO: Implement a NextPeer connection to the next participant in the tournament
 		
-		
-		//Clear message text
-		messageText.setText("");
 	}
 
 	/**
@@ -115,7 +126,7 @@ public class SendStory implements Screen {
 	 * @param str
 	 */
 	public void sendMessageToScreen(String str) {
-		textArea.setText(textArea.getText().toString()+"\n"+str);
+		storyArea.setText(storyArea.getText().toString()+"\n"+str);
 	}
 
 	@Override
@@ -125,13 +136,11 @@ public class SendStory implements Screen {
 
 	@Override
 	public void pause() {
-		Gdx.app.log(StoryIdea.TITLE, "Play Screen Pause");
-
+		
 	}
 
 	@Override
 	public void resume() {
-		Gdx.app.log(StoryIdea.TITLE, "Play Screen Resume");
 
 	}
 
@@ -144,9 +153,9 @@ public class SendStory implements Screen {
 	 * Send the scroll bar to the bottom of the screen.
 	 * Is called everytime there is text entered to the screen
 	 */
-	private void sendScrollBarToBottom() {
-		scrollPane.validate();
-		scrollPane.scrollTo(scrollPane.getMaxX(), -scrollPane.getMaxY(), scrollPane.getWidth(), scrollPane.getHeight());
-	}
+//	private void sendScrollBarToBottom() {
+//		scrollPane.validate();
+//		scrollPane.scrollTo(scrollPane.getMaxX(), -scrollPane.getMaxY(), scrollPane.getWidth(), scrollPane.getHeight());
+//	}
 	
 }
