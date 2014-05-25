@@ -87,7 +87,7 @@ public class SendStory implements Screen {
 					return true;
 				default:
 					if(storyArea.getCursorPosition() < messageLength) 
-						storyArea.setText(messageTyped+savedText.substring(messageTyped.length()));
+						storyArea.setText(messageTyped+savedText.substring(messageLength));
 					savedText = storyArea.getText();
 					return true;
 				}
