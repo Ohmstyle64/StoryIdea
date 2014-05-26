@@ -76,7 +76,7 @@ public class SendStory implements Screen {
 		sendButton.addListener(new ClickListener() {
 			@Override
 			public void clicked(InputEvent event, float x, float y) {
-				sendMessageToNextPeer(storyArea.getText());					//TODO: Remove this. Only for desktop
+				sendMessageToSwarm(storyArea.getText());					//TODO: Remove this. Only for desktop
 			}
 		});
 		storyArea.addListener(new InputListener() {
@@ -84,7 +84,7 @@ public class SendStory implements Screen {
 			public boolean keyTyped(InputEvent event, char character) {
 				switch(character) {
 				case 13 :
-					sendMessageToNextPeer(storyArea.getText());
+					sendMessageToSwarm(storyArea.getText());
 					return true;
 				default:
 					if(storyArea.getCursorPosition() < messageLength) 
@@ -106,7 +106,7 @@ public class SendStory implements Screen {
 	 * Send message to next person in circle and send to screen
 	 * @param str
 	 */
-	public void sendMessageToNextPeer(String str) {
+	public void sendMessageToSwarm(String str) {
 		//TODO: Implement a NextPeer connection to the next participant in the tournament
 		swarm.sendMessage(str);
 	}

@@ -1,6 +1,8 @@
 package com.aneebo.storyidea.desktop.swarm;
 
 import com.aneebo.storyidea.swarm.SwarmI;
+import com.aneebo.storyidea.swarm.SwarmUserCore;
+import com.badlogic.gdx.utils.Array;
 
 public class SwarmDesktop implements SwarmI {
 
@@ -32,5 +34,13 @@ public class SwarmDesktop implements SwarmI {
 	public boolean isLoggedIn() {
 		return loggedIn;
 	}
+
+	@Override
+	public Array<SwarmUserCore> getFriends() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+	
+	
 
 }
