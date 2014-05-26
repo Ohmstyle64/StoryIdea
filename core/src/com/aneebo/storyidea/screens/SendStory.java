@@ -1,4 +1,5 @@
 package com.aneebo.storyidea.screens;
+import static com.aneebo.storyidea.StoryIdea.fb;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Screen;
@@ -107,7 +108,7 @@ public class SendStory implements Screen {
 	 */
 	public void sendMessageToNextPeer(String str) {
 		//TODO: Implement a NextPeer connection to the next participant in the tournament
-		
+		fb.sendMessage(str);
 	}
 
 	/**

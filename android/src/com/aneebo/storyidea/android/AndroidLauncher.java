@@ -5,6 +5,7 @@ import android.os.Bundle;
 import com.badlogic.gdx.backends.android.AndroidApplication;
 import com.badlogic.gdx.backends.android.AndroidApplicationConfiguration;
 import com.aneebo.storyidea.StoryIdea;
+import com.aneebo.storyidea.android.facebook.FacebookAndroid;
 
 public class AndroidLauncher extends AndroidApplication {
 	@Override
@@ -12,7 +13,7 @@ public class AndroidLauncher extends AndroidApplication {
 		super.onCreate(savedInstanceState);
 		AndroidApplicationConfiguration config = new AndroidApplicationConfiguration();
 		
-		initialize(new StoryIdea(), config);
+		initialize(new StoryIdea(new FacebookAndroid()), config);
 		AndroidBug5497Workaround.assistActivity(this);
 	}
 }
