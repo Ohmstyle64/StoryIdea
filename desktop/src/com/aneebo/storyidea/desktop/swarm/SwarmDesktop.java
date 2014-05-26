@@ -1,8 +1,8 @@
-package com.aneebo.storyidea.desktop.facebook;
+package com.aneebo.storyidea.desktop.swarm;
 
-import com.aneebo.storyidea.facebook.FacebookI;
+import com.aneebo.storyidea.swarm.SwarmI;
 
-public class FacebookDesktop implements FacebookI {
+public class SwarmDesktop implements SwarmI {
 
 	@Override
 	public void login() {

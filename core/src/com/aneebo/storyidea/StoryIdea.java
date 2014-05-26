@@ -1,7 +1,7 @@
 package com.aneebo.storyidea;
 
-import com.aneebo.storyidea.facebook.FacebookI;
-import com.aneebo.storyidea.screens.SendStory;
+import com.aneebo.storyidea.screens.MainMenu;
+import com.aneebo.storyidea.swarm.SwarmI;
 import com.badlogic.gdx.Game;
 
 public class StoryIdea extends Game {
@@ -9,15 +9,15 @@ public class StoryIdea extends Game {
 	public static final String TITLE = "Story Idea";
 	public static final String VERSION = "0.0.0";
 	
-	public static FacebookI fb;
+	public static SwarmI swarm;
 	
-	public StoryIdea(FacebookI fb) {
-		StoryIdea.fb = fb;
+	public StoryIdea(SwarmI swarm) {
+		StoryIdea.swarm = swarm;
 	}
 	
 	@Override
 	public void create () {
 		//Start the app by loading the Splash Screen.
-		setScreen(new SendStory());
+		setScreen(new MainMenu());
 	}
 }

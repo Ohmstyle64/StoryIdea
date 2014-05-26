@@ -1,14 +1,17 @@
-package com.aneebo.storyidea.android.facebook;
+package com.aneebo.storyidea.android.swarm;
 
 import com.aneebo.storyidea.StoryIdea;
-import com.aneebo.storyidea.facebook.FacebookI;
+import com.aneebo.storyidea.swarm.SwarmI;
 import com.badlogic.gdx.Gdx;
+import com.swarmconnect.Swarm;
 
-public class FacebookAndroid implements FacebookI {
+public class SwarmAndroid implements SwarmI {
 
 	@Override
 	public void login() {
-		Gdx.app.log(StoryIdea.TITLE, "Android: login");
+		if(!Swarm.isLoggedIn()) {
+			Swarm.showLogin();
+		}
 	}
 
 	@Override
