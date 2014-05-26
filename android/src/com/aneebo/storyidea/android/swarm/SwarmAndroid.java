@@ -20,4 +20,16 @@ public class SwarmAndroid implements SwarmI {
 		return false;
 	}
 
+	@Override
+	public void logout() {
+		if(Swarm.isLoggedIn()) {
+			Swarm.logOut();
+		}
+	}
+
+	@Override
+	public boolean isLoggedIn() {
+		return Swarm.isLoggedIn();
+	}
+
 }

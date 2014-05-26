@@ -4,9 +4,15 @@ import com.aneebo.storyidea.swarm.SwarmI;
 
 public class SwarmDesktop implements SwarmI {
 
+	boolean loggedIn;
+	
+	public SwarmDesktop() {
+		loggedIn = false;
+	}
+	
 	@Override
 	public void login() {
-		// TODO Auto-generated method stub
+		loggedIn = true;
 		System.out.println("Desktop: Login");
 	}
 
@@ -14,6 +20,17 @@ public class SwarmDesktop implements SwarmI {
 	public boolean sendMessage(String str) {
 		System.out.println("Desktop: "+str);
 		return false;
+	}
+
+	@Override
+	public void logout() {
+		loggedIn = true;
+		System.out.println("Desktop: Logout");
+	}
+
+	@Override
+	public boolean isLoggedIn() {
+		return loggedIn;
 	}
 
 }
