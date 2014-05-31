@@ -1,15 +1,21 @@
 package com.aneebo.storyidea.desktop.swarm;
 
+import com.aneebo.storyidea.circles.SwarmUserCore;
 import com.aneebo.storyidea.swarm.SwarmI;
-import com.aneebo.storyidea.swarm.SwarmUserCore;
 import com.badlogic.gdx.utils.Array;
 
 public class SwarmDesktop implements SwarmI {
 
-	boolean loggedIn;
+	private boolean loggedIn;
+	private Array<SwarmUserCore> friends;
 	
 	public SwarmDesktop() {
 		loggedIn = false;
+		friends = new Array<SwarmUserCore>(false, 2, SwarmUserCore.class);
+		SwarmUserCore f1 = new SwarmUserCore(0, 1, "Kevin");
+		SwarmUserCore f2 = new SwarmUserCore(0, 2, "Eric");
+		friends.add(f1);
+		friends.add(f2);
 	}
 	
 	@Override
@@ -37,8 +43,7 @@ public class SwarmDesktop implements SwarmI {
 
 	@Override
 	public Array<SwarmUserCore> getFriends() {
-		// TODO Auto-generated method stub
-		return null;
+		return friends;
 	}
 	
 	

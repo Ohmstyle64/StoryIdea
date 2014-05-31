@@ -1,5 +1,6 @@
 package com.aneebo.storyidea.swarm;
 
+import com.aneebo.storyidea.circles.SwarmUserCore;
 import com.badlogic.gdx.utils.Array;
 
 public interface SwarmI {

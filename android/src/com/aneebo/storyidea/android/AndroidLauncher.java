@@ -24,7 +24,7 @@ public class AndroidLauncher extends AndroidApplication {
 		AndroidBug5497Workaround.assistActivity(this);
 		
 		//Setup Swarm
-		Swarm.setActive(this);	
+//		Swarm.setActive(this);
 	}
 	
 	@Override

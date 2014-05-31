@@ -1,4 +1,4 @@
-package com.aneebo.storyidea.swarm;
+package com.aneebo.storyidea.circles;
 
 public class SwarmUserCore {
 	private int points, userId;

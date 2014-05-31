@@ -3,8 +3,8 @@ package com.aneebo.storyidea.android.swarm;
 import java.util.List;
 
 import com.aneebo.storyidea.StoryIdea;
+import com.aneebo.storyidea.circles.SwarmUserCore;
 import com.aneebo.storyidea.swarm.SwarmI;
-import com.aneebo.storyidea.swarm.SwarmUserCore;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.utils.Array;
 import com.swarmconnect.Swarm;
@@ -23,6 +23,9 @@ public class SwarmAndroid implements SwarmI {
 	public void login() {
 		if(!Swarm.isLoggedIn()) {
 			Swarm.showLogin();
+			Gdx.app.log(StoryIdea.TITLE, Swarm.user.username);
+			Gdx.app.log(StoryIdea.TITLE, Swarm.user.picUrl);
+		
 		}
 	}
 
@@ -52,7 +55,7 @@ public class SwarmAndroid implements SwarmI {
 			friends.clear();
 			//Grab all friends
 			Swarm.user.getFriends(new GotFriendsCB() {
-
+				
 				@Override
 				public void gotFriends(List<SwarmUser> arg0) {
 					//Check if friend list is null
