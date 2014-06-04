@@ -1,10 +1,10 @@
-package com.aneebo.storyidea.circles;
+package com.aneebo.storyidea.users;
 
-public class SwarmUserCore {
+public class SocialUser {
 	private int points, userId;
 	private String username;
 	
-	public SwarmUserCore(int points, int userId, String username) {
+	public SocialUser(int points, int userId, String username) {
 		this.points = points;
 		this.userId = userId;
 		this.username = username;
@@ -27,7 +27,5 @@ public class SwarmUserCore {
 	}
 	public void setUsername(String username) {
 		this.username = username;
-	}
-	
-	
+	}	
 }

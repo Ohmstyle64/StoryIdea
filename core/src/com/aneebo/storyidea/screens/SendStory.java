@@ -1,6 +1,7 @@
 package com.aneebo.storyidea.screens;
-import static com.aneebo.storyidea.StoryIdea.swarm;
+import static com.aneebo.storyidea.StoryIdea.social;
 
+import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.GL20;
@@ -108,7 +109,8 @@ public class SendStory implements Screen {
 	 */
 	public void sendMessageToSwarm(String str) {
 		//TODO: Implement a NextPeer connection to the next participant in the tournament
-		swarm.sendMessage(str);
+		social.sendMessage(str);
+		((Game)Gdx.app.getApplicationListener()).setScreen(new MainMenu());
 	}
 
 	/**
