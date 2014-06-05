@@ -1,24 +1,26 @@
 package com.aneebo.storyidea.circles;
 
+import java.util.concurrent.TimeUnit;
+
 import com.badlogic.gdx.utils.Array;
 
 public class CircleList {
 	
 	private Array<UserCircle> circle;
+	private int count;
 	
 	public CircleList(Array<UserCircle> circle) {
 		this.circle = circle;
+		count = 0;
 	}
 	
-	public Array<Integer> getCircleIds() {
-		Array<Integer> ids = new Array<Integer>(false,circle.size, Integer.class);
-		for(UserCircle uc : circle) {
-			ids.add(uc.ID);
-		}
-		return ids;
+	public CircleList() {
+		this(new Array<UserCircle>());
 	}
-	
+		
 	public void addCircle(UserCircle uc) {
+		count++;
+		uc.ID = count;
 		circle.add(uc);
 	}
 	
@@ -37,11 +39,20 @@ public class CircleList {
 			sb.append("Circle: ");
 			sb.append(uc.ID);
 			sb.append("  ");
-			sb.append("Time: ");
-			sb.append(uc.timeRemaining());
+			sb.append("Ends: ");
+			sb.append(getTime(uc));
 			displayInfo.add(sb.toString());
 			sb.setLength(0);
 		}
 		return displayInfo;
+	}
+	private String getTime(UserCircle uc) {
+		long millis = uc.timeRemaining();
+        long hours = TimeUnit.MILLISECONDS.toHours(millis);
+        millis -= TimeUnit.HOURS.toMillis(hours);
+        long minutes = TimeUnit.MILLISECONDS.toMinutes(millis);
+        millis -= TimeUnit.MINUTES.toMillis(minutes);
+        long seconds = TimeUnit.MILLISECONDS.toSeconds(millis);
+		return String.format("%02d:%02d:%02d", hours,minutes,seconds);
 	}
 }

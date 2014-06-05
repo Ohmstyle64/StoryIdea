@@ -1,6 +1,7 @@
 package com.aneebo.storyidea.social;
 
 import com.aneebo.storyidea.circles.CircleList;
+import com.aneebo.storyidea.circles.UserCircle;
 import com.aneebo.storyidea.users.SocialUser;
 import com.badlogic.gdx.utils.Array;
 
@@ -13,5 +14,5 @@ public interface SocialCodeI {
 	public void initiate();
 	public void showDashboard();
 	public CircleList getCloudCircles();
-	public void saveCircleToCloud(CircleList circles)
+	public void saveCircleToCloud(UserCircle circles)
 ;}

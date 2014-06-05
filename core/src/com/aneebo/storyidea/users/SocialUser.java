@@ -27,5 +27,13 @@ public class SocialUser {
 	}
 	public void setUsername(String username) {
 		this.username = username;
-	}	
+	}
+	@Override
+	public boolean equals(Object obj) {
+		if(obj instanceof SocialUser){
+			SocialUser user = (SocialUser)obj;
+			return user.username.equals(username);
+		}
+		return super.equals(obj);
+	}
 }

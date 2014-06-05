@@ -16,6 +16,8 @@ import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.ui.TextArea;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
+import com.badlogic.gdx.utils.Timer;
+import com.badlogic.gdx.utils.Timer.Task;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
 
 public class SendStory implements Screen {
@@ -30,6 +32,7 @@ public class SendStory implements Screen {
 	private int messageLength = 0;
 	private String messageTyped;
 	private String savedText;
+	
 	
 	@Override
 	public void render(float delta) {
@@ -54,8 +57,8 @@ public class SendStory implements Screen {
 		//Create Stage and Skin
 		stage = new Stage(new ScreenViewport());
 		Gdx.input.setInputProcessor(stage);
-		atlas = new TextureAtlas("ui/atlas.pack");
-		skin = new Skin(Gdx.files.internal("ui/menuSkin.json"), atlas);
+		atlas = new TextureAtlas("ui/defaultskin.atlas");
+		skin = new Skin(Gdx.files.internal("ui/defaultskin.json"), atlas);
 		
 		//Create table for layout
 		table = new Table();
@@ -77,7 +80,7 @@ public class SendStory implements Screen {
 		sendButton.addListener(new ClickListener() {
 			@Override
 			public void clicked(InputEvent event, float x, float y) {
-				sendMessageToSwarm(storyArea.getText());					//TODO: Remove this. Only for desktop
+				sendMessageToSocial(storyArea.getText());				
 			}
 		});
 		storyArea.addListener(new InputListener() {
@@ -85,7 +88,7 @@ public class SendStory implements Screen {
 			public boolean keyTyped(InputEvent event, char character) {
 				switch(character) {
 				case 13 :
-					sendMessageToSwarm(storyArea.getText());
+					sendMessageToSocial(storyArea.getText());
 					return true;
 				default:
 					if(storyArea.getCursorPosition() < messageLength) 
@@ -107,10 +110,15 @@ public class SendStory implements Screen {
 	 * Send message to next person in circle and send to screen
 	 * @param str
 	 */
-	public void sendMessageToSwarm(String str) {
-		//TODO: Implement a NextPeer connection to the next participant in the tournament
+	public void sendMessageToSocial(String str) {
+		Gdx.input.setOnscreenKeyboardVisible(false);
 		social.sendMessage(str);
-		((Game)Gdx.app.getApplicationListener()).setScreen(new MainMenu());
+		Timer.schedule(new Task() {
+			@Override
+			public void run() {
+				((Game)Gdx.app.getApplicationListener()).setScreen(new MainMenu());
+			}
+		}, 0.125f);
 	}
 
 	/**

@@ -10,7 +10,7 @@ import com.badlogic.gdx.utils.Array;
 public class UserCircle {
 	
 	public static final int DEFAULT_WAIT = 86400000;
-	public static int ID = 0;
+	public int ID = 0;
 	
 	private Date deadline;
 	private Array<SocialUser> activeUsers;
@@ -37,19 +37,13 @@ public class UserCircle {
 	
 	
 	public long timeRemaining() {
-		Calendar cal = Calendar.getInstance();
-		cal.setTime(new Date());
-		cal.add(Calendar.HOUR_OF_DAY, 5);
-		Date today = cal.getTime();
+		Date today = new Date();
 		long diff = deadline.getTime() - today.getTime();
-		System.out.println(deadline.getTime());
-		System.out.println(today.getTime());
-		System.out.println(diff);
 		if(diff < 0 ) {
 			diff = 0;
 			over = true;
 		}
-		return diff / 1000;
+		return diff;
 	}
 	
 	public boolean isOver() {

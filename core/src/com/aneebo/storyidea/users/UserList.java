@@ -16,4 +16,20 @@ public class UserList {
 			userNameList.add(user.getUsername());
 		return userNameList;		
 	}
+	
+	public Array<SocialUser> getUserSubset(Array<String> usernames) {
+		Array<SocialUser> userSubset = new Array<SocialUser>(false, usernames.size, SocialUser.class);
+		int lengthUL = userList.size;
+		int lengthUN = usernames.size;
+		for(int i = 0; i < lengthUL; i++) {
+			String username = userList.items[i].getUsername();
+			for(int j = 0; j < lengthUN; j++) {
+				if(username.equals(usernames.get(j))){
+					userSubset.add(userList.items[i]);
+					break;
+				}
+			}
+		}
+		return userSubset;
+	}
 }

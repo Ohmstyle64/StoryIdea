@@ -38,8 +38,8 @@ public class Splash implements Screen {
 		stage = new Stage();
 		Gdx.input.setInputProcessor(stage);
 		
-		atlas = new TextureAtlas("ui/atlas.pack");
-		skin = new Skin(Gdx.files.internal("ui/menuSkin.json"),atlas);
+		atlas = new TextureAtlas("ui/defaultskin.atlas");
+		skin = new Skin(Gdx.files.internal("ui/defaultskin.json"),atlas);
 			
 		splashTexture = new Texture("img/splash_01.jpg");
 		Image image = new Image(splashTexture);

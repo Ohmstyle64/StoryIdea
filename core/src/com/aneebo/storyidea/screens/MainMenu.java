@@ -4,8 +4,6 @@ import static com.aneebo.storyidea.StoryIdea.social;
 
 import com.aneebo.storyidea.StoryIdea;
 import com.aneebo.storyidea.circles.CircleList;
-import com.aneebo.storyidea.circles.UserCircle;
-import com.aneebo.storyidea.users.SocialUser;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.GL20;
@@ -34,6 +32,7 @@ public class MainMenu implements Screen {
 	
 	private List<String> circleList;
 	
+	private float accum = 0;
 	
 	@Override
 	public void render(float delta) {
@@ -50,6 +49,13 @@ public class MainMenu implements Screen {
 		stage.act(delta);
 		stage.draw();
 		
+		//Refresh circle list data
+		accum += delta;
+		if(accum >= 1) {
+			circleList.setItems(getCircleList());
+			accum = 0;
+		}
+		
 		//TODO: Remove this. Draws debug lines
 		Table.drawDebug(stage);		
 	}
@@ -62,15 +68,16 @@ public class MainMenu implements Screen {
 
 	@Override
 	public void show() {		
-		social.initiate();
+		if(!social.isLoggedIn())
+			social.initiate();
 		
 		//Setup Menu
 		batch = new SpriteBatch();
 		stage = new Stage();
 		Gdx.input.setInputProcessor(stage);
 		
-		atlas = new TextureAtlas("ui/atlas.pack");
-		skin = new Skin(Gdx.files.internal("ui/menuSkin.json"),atlas);
+		atlas = new TextureAtlas("ui/defaultskin.atlas");
+		skin = new Skin(Gdx.files.internal("ui/defaultskin.json"),atlas);
 		
 		table = new Table();
 		table.setFillParent(true);
@@ -100,7 +107,7 @@ public class MainMenu implements Screen {
 				}
 			}
 		});
-		final TextButton addFriendsButton = new TextButton("Create Circles", skin);
+		final TextButton addFriendsButton = new TextButton("Add Circles", skin);
 		addFriendsButton.addListener(new ClickListener() {
 			@Override
 			public void clicked(InputEvent event, float x, float y) {
@@ -116,7 +123,9 @@ public class MainMenu implements Screen {
 		});
 		
 		circleList = new List<String>(skin);
-		circleList.setItems(getCircleList().getDisplayInfo());
+		
+		//Get CircleList from cloud if it exists
+		circleList.setItems(getCircleList());
 		ScrollPane scrollPane = new ScrollPane(circleList, skin);
 		
 		
@@ -132,25 +141,12 @@ public class MainMenu implements Screen {
 		
 	}	
 	
-	private CircleList getCircleList() {
-		//TODO: Add Cloud storage retreival to get list!
-//		social.getCloudCircles();
-		
-		//Create array list to hold users
-		Array<SocialUser> su1 = new Array<SocialUser>(false, 2, SocialUser.class);
-		su1.items[0] = new SocialUser(0, 123, "Kevin");
-		su1.items[1] = new SocialUser(2, 234, "Eric");
-		
-		//Create user circle to hold the users
-		UserCircle uc1 = new UserCircle(su1, 4);
-		
-		//Create array to hold a list of user circles
-		Array<UserCircle> uca1 = new Array<UserCircle>(false, 1, UserCircle.class);
-		uca1.add(uc1);
-		
-		//Create a circle list
-		CircleList cl1 = new CircleList(uca1);
-		return cl1;
+	private Array<String> getCircleList() {
+		if(social.isLoggedIn()) {
+			return social.getCloudCircles().getDisplayInfo();
+		}
+		else
+			 return new CircleList().getDisplayInfo();
 	}
 	
 	@Override
