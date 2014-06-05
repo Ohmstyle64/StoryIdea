@@ -12,6 +12,9 @@ public class AndroidLauncher extends AndroidApplication {
 	
 	
 	public static final int MY_APP_D = 11620;
+	public static final String SWARM_ID = "4e7484e2903dfa74fd2de6d0cca9bfd7";
+	public static final String API_KEY = "12df9009336e851d29ee089ad26cbb12520f36738ccd4be1aedd54d7e04d06d9";
+	public static final String PVT_KEY = "9cc0f85506c3eb27cbbb0e855d5a877c342f9449e4768cc5ab77ebf8ee873af7";
 	
 	@Override
 	protected void onCreate (Bundle savedInstanceState) {
@@ -22,6 +25,8 @@ public class AndroidLauncher extends AndroidApplication {
 		
 		//Android workaround for softkeyboard
 		AndroidBug5497Workaround.assistActivity(this);
+		
+		Swarm.preload(this, MY_APP_D, SWARM_ID);
 		
 	}
 	

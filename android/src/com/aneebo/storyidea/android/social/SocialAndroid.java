@@ -7,6 +7,7 @@ import android.app.Activity;
 import com.aneebo.storyidea.StoryIdea;
 import com.aneebo.storyidea.android.AndroidLauncher;
 import com.aneebo.storyidea.circles.CircleList;
+import com.aneebo.storyidea.circles.UserCircle;
 import com.aneebo.storyidea.social.SocialCodeI;
 import com.aneebo.storyidea.users.SocialUser;
 import com.badlogic.gdx.Gdx;
@@ -79,9 +80,9 @@ public class SocialAndroid implements SocialCodeI {
 	@Override
 	public void initiate() {
 		if(!Swarm.isInitialized()) {
-			Swarm.init(activity, AndroidLauncher.MY_APP_D, "4e7484e2903dfa74fd2de6d0cca9bfd7");
+			Swarm.init(activity, AndroidLauncher.MY_APP_D, AndroidLauncher.SWARM_ID);
 						
-			WarpClient.initialize("12df9009336e851d29ee089ad26cbb12520f36738ccd4be1aedd54d7e04d06d9", "9cc0f85506c3eb27cbbb0e855d5a877c342f9449e4768cc5ab77ebf8ee873af7");
+			WarpClient.initialize(AndroidLauncher.API_KEY, AndroidLauncher.PVT_KEY);
 
 			
 		}
@@ -94,7 +95,7 @@ public class SocialAndroid implements SocialCodeI {
 	}
 
 	@Override
-	public void saveCircleToCloud(CircleList circles) {
+	public void saveCircleToCloud(UserCircle circles) {
 		// TODO Auto-generated method stub
 		
 	}
