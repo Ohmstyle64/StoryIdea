@@ -10,7 +10,7 @@ public class DesktopLauncher {
 		LwjglApplicationConfiguration config = new LwjglApplicationConfiguration();
 		config.title = StoryIdea.TITLE +" v"+ StoryIdea.VERSION;
 		config.vSyncEnabled = true;
-		config.width = 480;
+		config.width = 600;
 		config.height = 800;
 		new LwjglApplication(new StoryIdea(new SocialDesktop()), config);
 	}

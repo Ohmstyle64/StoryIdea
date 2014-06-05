@@ -1,6 +1,7 @@
 package com.aneebo.storyidea.desktop.social;
 
 import com.aneebo.storyidea.circles.CircleList;
+import com.aneebo.storyidea.circles.UserCircle;
 import com.aneebo.storyidea.social.SocialCodeI;
 import com.aneebo.storyidea.users.SocialUser;
 import com.badlogic.gdx.utils.Array;
@@ -9,14 +10,10 @@ public class SocialDesktop implements SocialCodeI {
 
 	private boolean loggedIn;
 	private Array<SocialUser> friends;
+	private CircleList circleList;
 	
 	public SocialDesktop() {
-		loggedIn = false;
-		friends = new Array<SocialUser>(false, 2, SocialUser.class);
-		SocialUser f1 = new SocialUser(0, 1, "Kevin");
-		SocialUser f2 = new SocialUser(0, 2, "Eric");
-		friends.add(f1);
-		friends.add(f2);
+
 	}
 	
 	@Override
@@ -33,7 +30,7 @@ public class SocialDesktop implements SocialCodeI {
 
 	@Override
 	public void logout() {
-		loggedIn = true;
+		loggedIn = false;
 		System.out.println("Desktop: Logout");
 	}
 
@@ -49,6 +46,13 @@ public class SocialDesktop implements SocialCodeI {
 	@Override
 	public void initiate() {
 		System.out.println("Initiated");
+		loggedIn = true;
+		friends = new Array<SocialUser>(false, 2, SocialUser.class);
+		SocialUser f1 = new SocialUser(0, 1, "Kevin");
+		SocialUser f2 = new SocialUser(0, 2, "Eric");
+		friends.add(f1);
+		friends.add(f2);
+		circleList = new CircleList();
 	}
 
 	@Override
@@ -59,14 +63,12 @@ public class SocialDesktop implements SocialCodeI {
 
 	@Override
 	public CircleList getCloudCircles() {
-		// TODO Auto-generated method stub
-		return null;
+		return circleList;
 	}
 
 	@Override
-	public void saveCircleToCloud(CircleList circles) {
-		// TODO Auto-generated method stub
-		
+	public void saveCircleToCloud(UserCircle circles) {
+		circleList.addCircle(circles);
 	}
 	
 
