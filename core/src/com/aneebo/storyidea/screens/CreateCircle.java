@@ -35,6 +35,8 @@ public class CreateCircle implements Screen {
 	private List<String> friends;
 	private List<String> selected;
 	private Slider slider;
+	
+	private float accum = 15;
 
 	@Override
 	public void render(float delta) {
@@ -49,7 +51,14 @@ public class CreateCircle implements Screen {
 		Table.drawDebug(stage);
 		
 		//Refresh friendslist
-		
+		accum+=delta;
+		if(accum >= 15) {
+			getUsernames();
+			int index = friends.getSelectedIndex();
+			friends.setItems(userList.getUserNames());
+			friends.setSelectedIndex(index);
+			accum = 0;
+		}
 
 	}
 
@@ -83,11 +92,7 @@ public class CreateCircle implements Screen {
 		
 		
 		//TODO: Need to wait for friends to load. Need a progress bar if necessary.
-		if(social.isLoggedIn()) {
-			userList = new UserList(social.getFriends());
-		}
-		else
-			userList= new UserList(new Array<SocialUser>(false, 16, SocialUser.class));
+		getUsernames();
 		
 		//Create friends list
 		friends = new List<String>(skin);
@@ -110,8 +115,6 @@ public class CreateCircle implements Screen {
 		addFriend.addListener(new ChangeListener(){
 			@Override
 			public void changed(ChangeEvent event, Actor actor) {
-				Gdx.app.log(StoryIdea.TITLE, "Add Friend");
-				Gdx.app.log(StoryIdea.TITLE, friends.getSelected());
 				if(friends.getSelected() != null) {
 					String selectedFriend = friends.getSelected();
 					Array<String> items = new Array<String>();
@@ -128,8 +131,6 @@ public class CreateCircle implements Screen {
 		removeSelected.addListener(new ChangeListener() {
 			@Override
 			public void changed(ChangeEvent event, Actor actor) {
-				Gdx.app.log(StoryIdea.TITLE, "Remove Friend");
-				Gdx.app.log(StoryIdea.TITLE, selected.getSelected());
 				if(selected.getSelected() != null) {
 					String selectedFriend = selected.getSelected();
 					Array<String> items = new Array<String>();
@@ -189,8 +190,16 @@ public class CreateCircle implements Screen {
 	
 	private void startCircle() {
 		//TODO: Send list to cloud
-		UserCircle uc = new UserCircle(userList.getUserSubset(selected.getItems()), 2);
+		UserCircle uc = new UserCircle(userList.getUserSubset(selected.getItems()), slider.getZIndex());
 		social.saveCircleToCloud(uc);
+	}
+	
+	private void getUsernames() {
+		if(social.isLoggedIn()) {
+			userList = new UserList(social.getFriends());
+		}
+		else
+			userList= new UserList(new Array<SocialUser>(false, 16, SocialUser.class));
 	}
 
 	@Override

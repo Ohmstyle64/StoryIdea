@@ -9,6 +9,7 @@ public interface SocialCodeI {
 	public void login();
 	public void logout();
 	public boolean isLoggedIn();
+	public boolean isInitialized();
 	public boolean sendMessage(String str);
 	public Array<SocialUser> getFriends();
 	public void initiate();

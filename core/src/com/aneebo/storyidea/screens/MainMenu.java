@@ -52,7 +52,9 @@ public class MainMenu implements Screen {
 		//Refresh circle list data
 		accum += delta;
 		if(accum >= 1) {
+			int index = circleList.getSelectedIndex();
 			circleList.setItems(getCircleList());
+			circleList.setSelectedIndex(index);
 			accum = 0;
 		}
 		
@@ -68,8 +70,7 @@ public class MainMenu implements Screen {
 
 	@Override
 	public void show() {		
-		if(!social.isLoggedIn())
-			social.initiate();
+		social.initiate();
 		
 		//Setup Menu
 		batch = new SpriteBatch();
