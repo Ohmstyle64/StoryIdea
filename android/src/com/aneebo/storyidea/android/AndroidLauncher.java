@@ -26,8 +26,6 @@ public class AndroidLauncher extends AndroidApplication {
 		//Android workaround for softkeyboard
 		AndroidBug5497Workaround.assistActivity(this);
 		
-		Swarm.preload(this, MY_APP_D, SWARM_ID);
-		
 	}
 	
 	@Override

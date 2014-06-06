@@ -6,13 +6,13 @@ import android.app.Activity;
 
 import com.aneebo.storyidea.StoryIdea;
 import com.aneebo.storyidea.android.AndroidLauncher;
+import com.aneebo.storyidea.android.social.warp.WarpController;
 import com.aneebo.storyidea.circles.CircleList;
 import com.aneebo.storyidea.circles.UserCircle;
 import com.aneebo.storyidea.social.SocialCodeI;
 import com.aneebo.storyidea.users.SocialUser;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.utils.Array;
-import com.shephertz.app42.gaming.multiplayer.client.WarpClient;
 import com.swarmconnect.Swarm;
 import com.swarmconnect.SwarmActiveUser.GotFriendsCB;
 import com.swarmconnect.SwarmUser;
@@ -21,6 +21,8 @@ public class SocialAndroid implements SocialCodeI {
 
 	private Activity activity;
 	private Array<SocialUser> friends;
+	private CircleList circleList;
+	private WarpController warpController;
 	
 	public SocialAndroid(Activity activity) {
 		this.activity = activity;
@@ -67,7 +69,6 @@ public class SocialAndroid implements SocialCodeI {
 					friends.shrink();
 				}
 			});
-			
 		}
 		return friends;
 	}
@@ -81,22 +82,26 @@ public class SocialAndroid implements SocialCodeI {
 	public void initiate() {
 		if(!Swarm.isInitialized()) {
 			Swarm.init(activity, AndroidLauncher.MY_APP_D, AndroidLauncher.SWARM_ID);
-						
-			WarpClient.initialize(AndroidLauncher.API_KEY, AndroidLauncher.PVT_KEY);
-
-			
+			warpController = WarpController.getIntance();
+			circleList = new CircleList();
+			//TODO: get circle data from cloud
 		}
 	}
 
 	@Override
 	public CircleList getCloudCircles() {
-		// TODO Auto-generated method stub
-		return null;
+		//TODO: Implement this with a call to App42
+		return circleList;
 	}
 
 	@Override
 	public void saveCircleToCloud(UserCircle circles) {
-		// TODO Auto-generated method stub
-		
+		//TODO: Implement this with a call to App42
+		circleList.addCircle(circles);
+	}
+
+	@Override
+	public boolean isInitialized() {
+		return Swarm.isInitialized();
 	}
 }
