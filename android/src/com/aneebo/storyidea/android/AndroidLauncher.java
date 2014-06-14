@@ -13,19 +13,18 @@ public class AndroidLauncher extends AndroidApplication {
 	
 	public static final int MY_APP_D = 11620;
 	public static final String SWARM_ID = "4e7484e2903dfa74fd2de6d0cca9bfd7";
-	public static final String API_KEY = "12df9009336e851d29ee089ad26cbb12520f36738ccd4be1aedd54d7e04d06d9";
-	public static final String PVT_KEY = "9cc0f85506c3eb27cbbb0e855d5a877c342f9449e4768cc5ab77ebf8ee873af7";
+	public static final String API_KEY = "9fc34c63050554fc82647d8191af84ca14b64c74e4fdc15762afa56659f94600";
+	public static final String PVT_KEY = "60d1338661c40f61fb4bd543e5df40fd6d0b5447d80b42bcc05c89600220b714";
 	
 	@Override
 	protected void onCreate (Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		
 		AndroidApplicationConfiguration config = new AndroidApplicationConfiguration();
-		initialize(new StoryIdea(new SocialAndroid(this)), config);
+		initialize(new StoryIdea(SocialAndroid.getInstance(this)), config);
 		
 		//Android workaround for softkeyboard
 		AndroidBug5497Workaround.assistActivity(this);
-		
 	}
 	
 	@Override
