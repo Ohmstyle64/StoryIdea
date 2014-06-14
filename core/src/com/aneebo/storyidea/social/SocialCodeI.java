@@ -10,10 +10,19 @@ public interface SocialCodeI {
 	public void logout();
 	public boolean isLoggedIn();
 	public boolean isInitialized();
-	public boolean sendMessage(String str);
+	public void sendMessage(UserCircle uc, String str);
+	public String receiveMessage();
 	public Array<SocialUser> getFriends();
 	public void initiate();
 	public void showDashboard();
 	public CircleList getCloudCircles();
-	public void saveCircleToCloud(UserCircle circles)
-;}
+	//TODO:Remove
+	public UserCircle getTempCloudCircle();
+	public void saveCircleToCloud(UserCircle circles);
+	public SocialUser getMeUser();
+	
+	
+	//TODO:Use this new structure
+	public void requestToStartCircle(UserCircle uc);
+	
+}

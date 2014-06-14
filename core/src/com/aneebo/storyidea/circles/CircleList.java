@@ -11,7 +11,7 @@ public class CircleList {
 	
 	public CircleList(Array<UserCircle> circle) {
 		this.circle = circle;
-		count = 0;
+		count = 1;
 	}
 	
 	public CircleList() {

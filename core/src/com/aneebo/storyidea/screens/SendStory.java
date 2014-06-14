@@ -1,6 +1,7 @@
 package com.aneebo.storyidea.screens;
 import static com.aneebo.storyidea.StoryIdea.social;
 
+import com.aneebo.storyidea.circles.UserCircle;
 import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Screen;
@@ -33,6 +34,11 @@ public class SendStory implements Screen {
 	private String messageTyped;
 	private String savedText;
 	
+	private UserCircle uc;
+	
+	public SendStory(UserCircle uc) {
+		this.uc = uc;
+	}
 	
 	@Override
 	public void render(float delta) {
@@ -67,7 +73,9 @@ public class SendStory implements Screen {
 		
 		//Create rest of GUI
 		Label header = new Label("Welcome to the Jungle", skin);
-		storyArea = new TextArea("Current Story", skin);
+		String text = social.receiveMessage();
+		if(text == null) text = "Null Text";
+		storyArea = new TextArea(text, skin);
 		messageLength = (storyArea.getText() == "" ? 0 : storyArea.getText().length());
 		messageTyped = storyArea.getText();
 		savedText = messageTyped;
@@ -112,7 +120,7 @@ public class SendStory implements Screen {
 	 */
 	public void sendMessageToSocial(String str) {
 		Gdx.input.setOnscreenKeyboardVisible(false);
-		social.sendMessage(str);
+		social.sendMessage(uc, str);
 		Timer.schedule(new Task() {
 			@Override
 			public void run() {

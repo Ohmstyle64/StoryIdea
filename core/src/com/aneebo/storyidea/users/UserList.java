@@ -9,14 +9,14 @@ public class UserList {
 	public UserList(Array<SocialUser> userlist) {
 		this.userList = userlist;
 	}
-	
+	//Get all usernames
 	public Array<String> getUserNames() {
 		Array<String> userNameList = new Array<String>(false, userList.size, String.class);
 		for(SocialUser user : userList)
 			userNameList.add(user.getUsername());
 		return userNameList;		
 	}
-	
+	//Get the subset of social users that have the usernames in the array.
 	public Array<SocialUser> getUserSubset(Array<String> usernames) {
 		Array<SocialUser> userSubset = new Array<SocialUser>(false, usernames.size, SocialUser.class);
 		int lengthUL = userList.size;

@@ -2,7 +2,6 @@ package com.aneebo.storyidea.screens;
 
 import static com.aneebo.storyidea.StoryIdea.social;
 
-import com.aneebo.storyidea.StoryIdea;
 import com.aneebo.storyidea.circles.UserCircle;
 import com.aneebo.storyidea.users.SocialUser;
 import com.aneebo.storyidea.users.UserList;
@@ -52,14 +51,19 @@ public class CreateCircle implements Screen {
 		
 		//Refresh friendslist
 		accum+=delta;
-		if(accum >= 15) {
-			getUsernames();
-			int index = friends.getSelectedIndex();
-			friends.setItems(userList.getUserNames());
-			friends.setSelectedIndex(index);
+		if(accum >= 1) {
+			Array<String> names = userList.getUserNames();
+			
+			Array<String> selectedArray = selected.getItems();
+			for(int i = 0; i < selectedArray.size; i++) {
+				if(names.contains(selectedArray.get(i), false))
+					names.removeValue(selectedArray.get(i), false);
+			}
+			
+			friends.setItems(names);
 			accum = 0;
 		}
-
+		
 	}
 
 	@Override
@@ -87,11 +91,16 @@ public class CreateCircle implements Screen {
 		
 		
 		//Add a slider for the number story lines
-		Label sliderLabel = new Label("Story Lines:", skin);
 		slider = new Slider(2, 16, 1, false, skin);
+		final Label sliderLabel = new Label("Story Lines: "+(int)slider.getVisualValue(), skin);
+		slider.addListener(new ClickListener() {
+			@Override
+			public void touchDragged(InputEvent event, float x, float y,
+					int pointer) {
+				sliderLabel.setText("Story Lines: "+(int)slider.getVisualValue());
+			}
+		});
 		
-		
-		//TODO: Need to wait for friends to load. Need a progress bar if necessary.
 		getUsernames();
 		
 		//Create friends list
@@ -175,7 +184,7 @@ public class CreateCircle implements Screen {
 		table.add(heading).colspan(2).spaceBottom(10).row();
 		table.add(sliderLabel).spaceBottom(10);
 		table.add(slider).expandX().spaceBottom(10).row();
-		table.add(new Label("Friends:",skin)).row();
+		table.add(new Label("Online Friends:",skin)).row();
 		table.add(scrollFriends).colspan(2).center().expand().fillY().spaceBottom(10).row();
 		table.add(addFriend).spaceBottom(10).expandX();
 		table.add(removeSelected).spaceBottom(10).expandX().row();
@@ -190,8 +199,8 @@ public class CreateCircle implements Screen {
 	
 	private void startCircle() {
 		//TODO: Send list to cloud
-		UserCircle uc = new UserCircle(userList.getUserSubset(selected.getItems()), slider.getZIndex());
-		social.saveCircleToCloud(uc);
+		UserCircle uc = new UserCircle(userList.getUserSubset(selected.getItems()), slider.getVisualValue());
+		social.requestToStartCircle(uc);
 	}
 	
 	private void getUsernames() {

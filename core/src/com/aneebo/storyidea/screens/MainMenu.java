@@ -4,6 +4,7 @@ import static com.aneebo.storyidea.StoryIdea.social;
 
 import com.aneebo.storyidea.StoryIdea;
 import com.aneebo.storyidea.circles.CircleList;
+import com.aneebo.storyidea.circles.UserCircle;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.GL20;
@@ -31,6 +32,7 @@ public class MainMenu implements Screen {
 	private TextureAtlas atlas;
 	
 	private List<String> circleList;
+	private Array<UserCircle> userCircles;
 	
 	private float accum = 0;
 	
@@ -51,7 +53,7 @@ public class MainMenu implements Screen {
 		
 		//Refresh circle list data
 		accum += delta;
-		if(accum >= 1) {
+		if(accum >= 1 && social.isLoggedIn()) {
 			int index = circleList.getSelectedIndex();
 			circleList.setItems(getCircleList());
 			circleList.setSelectedIndex(index);
@@ -85,11 +87,19 @@ public class MainMenu implements Screen {
 		//TODO: Remove this.
 		table.debug();
 		
+		circleList = new List<String>(skin);
+		
+		//Get CircleList from cloud if it exists
+		circleList.setItems(getCircleList());
+		ScrollPane scrollPane = new ScrollPane(circleList, skin);
+		
 		final TextButton playButton = new TextButton("Play", skin);
 		playButton.addListener(new ClickListener() {
 			@Override
 			public void clicked(InputEvent event, float x, float y) {
-				((StoryIdea)Gdx.app.getApplicationListener()).setScreen(new SendStory());
+				if(circleList.getSelectedIndex() != -1)
+					((StoryIdea)Gdx.app.getApplicationListener()).setScreen(
+							new SendStory(userCircles.get(circleList.getSelectedIndex())));
 			}
 		});
 		final TextButton logButton = new TextButton("Log Out", skin);
@@ -123,12 +133,6 @@ public class MainMenu implements Screen {
 			}
 		});
 		
-		circleList = new List<String>(skin);
-		
-		//Get CircleList from cloud if it exists
-		circleList.setItems(getCircleList());
-		ScrollPane scrollPane = new ScrollPane(circleList, skin);
-		
 		
 		background = new Texture("img/sampleSplash.jpg");
 		table.add(new Label("Circle list", skin)).colspan(3).expandX().spaceBottom(50).row();
@@ -144,10 +148,13 @@ public class MainMenu implements Screen {
 	
 	private Array<String> getCircleList() {
 		if(social.isLoggedIn()) {
+			userCircles = social.getCloudCircles().getCircle();
 			return social.getCloudCircles().getDisplayInfo();
 		}
-		else
-			 return new CircleList().getDisplayInfo();
+		else {
+			userCircles = new Array<UserCircle>();
+			return new CircleList().getDisplayInfo();
+		}
 	}
 	
 	@Override
