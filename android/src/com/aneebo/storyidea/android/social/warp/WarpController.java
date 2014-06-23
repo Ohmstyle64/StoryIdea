@@ -2,11 +2,6 @@ package com.aneebo.storyidea.android.social.warp;
 
 import java.util.HashMap;
 
-import android.R;
-import android.app.AlertDialog;
-import android.content.DialogInterface;
-import android.content.DialogInterface.OnClickListener;
-
 import com.aneebo.storyidea.StoryIdea;
 import com.aneebo.storyidea.android.AndroidLauncher;
 import com.aneebo.storyidea.android.social.SocialAndroid;
@@ -22,6 +17,7 @@ import com.shephertz.app42.gaming.multiplayer.client.events.UpdateEvent;
 import com.shephertz.app42.gaming.multiplayer.client.listener.ChatRequestListener;
 import com.shephertz.app42.gaming.multiplayer.client.listener.ConnectionRequestListener;
 import com.shephertz.app42.gaming.multiplayer.client.listener.NotifyListener;
+import com.shephertz.app42.gaming.multiplayer.client.listener.TurnBasedRoomListener;
 
 public class WarpController {
 	
@@ -34,6 +30,7 @@ public class WarpController {
 	private CircleConnectionListener connectionListener = new CircleConnectionListener();
 	private CircleNotficationListener notficationListener = new CircleNotficationListener();
 	private CircleChatRequestListener chatListener = new CircleChatRequestListener();
+	private CircleTurnBasedRoomListener turnBasedRoomListener = new CircleTurnBasedRoomListener();
 	
 	private WarpController(SocialAndroid sa) {
 		this.sa = sa;
@@ -41,6 +38,7 @@ public class WarpController {
 		warpClient.addConnectionRequestListener(connectionListener);
 		warpClient.addNotificationListener(notficationListener);
 		warpClient.addChatRequestListener(chatListener);
+		warpClient.addTurnBasedRoomListener(turnBasedRoomListener);
 	}
 
 	private void initWarp() {
@@ -51,12 +49,40 @@ public class WarpController {
 			e.printStackTrace();
 		}
 	}
-	
+
 	public static WarpController getInstance(SocialAndroid sa) {
 		if(warpController==null) {
 			warpController = new WarpController(sa);
 		}
 		return warpController;
+	}
+	
+	public class CircleTurnBasedRoomListener implements TurnBasedRoomListener {
+
+		@Override
+		public void onGetMoveHistoryDone(byte arg0, MoveEvent[] arg1) {
+			// TODO Auto-generated method stub
+			
+		}
+
+		@Override
+		public void onSendMoveDone(byte arg0) {
+			// TODO Auto-generated method stub
+			
+		}
+
+		@Override
+		public void onStartGameDone(byte arg0) {
+			// TODO Auto-generated method stub
+			
+		}
+
+		@Override
+		public void onStopGameDone(byte arg0) {
+			// TODO Auto-generated method stub
+			
+		}
+		
 	}
 
 	public class CircleConnectionListener implements ConnectionRequestListener {
@@ -112,7 +138,7 @@ public class WarpController {
 		@Override
 		public void onChatReceived(ChatEvent arg0) {
 			// TODO Auto-generated method stub
-			
+			Gdx.app.log(StoryIdea.TITLE, arg0.getMessage()+"Apples");
 		}
 
 		@Override
@@ -135,53 +161,13 @@ public class WarpController {
 
 		@Override
 		public void onPrivateChatReceived(String arg0, String arg1) {
-			final String receivedFrom = arg0;
-			int comp = Integer.valueOf(arg1.substring(0, 3));
-			final String target = arg1.substring(3);
-			switch(comp) {
-			case SocialAndroid.MESSAGE :
-				message = target;
-				break;
-			case SocialAndroid.REQUEST :
-				Gdx.app.postRunnable(new Runnable() {
-					
-					@Override
-					public void run() {
-						AlertDialog.Builder builder = new AlertDialog.Builder(sa.getActivit());
-						builder.setTitle("Accept Circle");
-						builder.setMessage(target+" wants you to join a circle");
-						builder.setPositiveButton("Accept", new OnClickListener() {
-							
-							@Override
-							public void onClick(DialogInterface dialog, int which) {
-								warpClient.sendPrivateChat(receivedFrom, SocialAndroid.RESPONSE_YES+target);
-							}
-						});
-						builder.setNegativeButton("Decline", new OnClickListener() {
-							
-							@Override
-							public void onClick(DialogInterface dialog, int which) {
-								warpClient.sendPrivateChat(receivedFrom, SocialAndroid.RESPONSE_NO+target);
-							}
-						});
-						AlertDialog dialog = builder.create();
-						dialog.show();
-					}
-				});
-				break;
-			case SocialAndroid.RESPONSE_YES :
-				Gdx.app.log(StoryIdea.TITLE, arg0+": YES");
-				break;
-			case SocialAndroid.RESPONSE_NO :
-				Gdx.app.log(StoryIdea.TITLE, arg0+": NO");
-				break;
-			}
-						
+			
 		}
 
 		@Override
 		public void onRoomCreated(RoomData arg0) {
 			// TODO Auto-generated method stub
+			Gdx.app.log(StoryIdea.TITLE, "Room Created!: "+arg0.getName());
 			
 		}
 
@@ -213,7 +199,7 @@ public class WarpController {
 		@Override
 		public void onUserJoinedRoom(RoomData arg0, String arg1) {
 			// TODO Auto-generated method stub
-			
+			Gdx.app.log(StoryIdea.TITLE, arg1+" Joined!");
 		}
 
 		@Override
@@ -225,6 +211,7 @@ public class WarpController {
 		@Override
 		public void onUserLeftRoom(RoomData arg0, String arg1) {
 			// TODO Auto-generated method stub
+			Gdx.app.log(StoryIdea.TITLE, arg1+" Left!");
 			
 		}
 
