@@ -3,7 +3,6 @@ package com.aneebo.storyidea.screens;
 import static com.aneebo.storyidea.StoryIdea.social;
 
 import com.aneebo.storyidea.StoryIdea;
-import com.aneebo.storyidea.circles.CircleList;
 import com.aneebo.storyidea.circles.UserCircle;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Screen;
@@ -13,9 +12,7 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.Stage;
-import com.badlogic.gdx.scenes.scene2d.ui.Label;
-import com.badlogic.gdx.scenes.scene2d.ui.List;
-import com.badlogic.gdx.scenes.scene2d.ui.ScrollPane;
+import com.badlogic.gdx.scenes.scene2d.ui.Image;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
@@ -24,17 +21,12 @@ import com.badlogic.gdx.utils.Array;
 
 public class MainMenu implements Screen {
 
-	private Texture background;
+	private Image background;
 	private SpriteBatch batch;
 	private Stage stage;
 	private Table table;
 	private Skin skin;
 	private TextureAtlas atlas;
-	
-	private List<String> circleList;
-	private Array<UserCircle> userCircles;
-	
-	private float accum = 0;
 	
 	@Override
 	public void render(float delta) {
@@ -44,21 +36,13 @@ public class MainMenu implements Screen {
 		
 		//Draw Background
 		batch.begin();
-		batch.draw(background, 0, 0);		
+		background.draw(batch, 1);
 		batch.end();
+		
 		
 		//Let the stage act
 		stage.act(delta);
 		stage.draw();
-		
-		//Refresh circle list data
-		accum += delta;
-		if(accum >= 1 && social.isLoggedIn()) {
-			int index = circleList.getSelectedIndex();
-			circleList.setItems(getCircleList());
-			circleList.setSelectedIndex(index);
-			accum = 0;
-		}
 		
 		//TODO: Remove this. Draws debug lines
 		Table.drawDebug(stage);		
@@ -87,21 +71,7 @@ public class MainMenu implements Screen {
 		//TODO: Remove this.
 		table.debug();
 		
-		circleList = new List<String>(skin);
 		
-		//Get CircleList from cloud if it exists
-		circleList.setItems(getCircleList());
-		ScrollPane scrollPane = new ScrollPane(circleList, skin);
-		
-		final TextButton playButton = new TextButton("Play", skin);
-		playButton.addListener(new ClickListener() {
-			@Override
-			public void clicked(InputEvent event, float x, float y) {
-				if(circleList.getSelectedIndex() != -1)
-					((StoryIdea)Gdx.app.getApplicationListener()).setScreen(
-							new SendStory(userCircles.get(circleList.getSelectedIndex())));
-			}
-		});
 		final TextButton logButton = new TextButton("Log Out", skin);
 		logButton.addListener(new ClickListener() {
 			@Override
@@ -122,7 +92,7 @@ public class MainMenu implements Screen {
 		addFriendsButton.addListener(new ClickListener() {
 			@Override
 			public void clicked(InputEvent event, float x, float y) {
-				((StoryIdea)Gdx.app.getApplicationListener()).setScreen(new CreateCircle());
+				((StoryIdea)Gdx.app.getApplicationListener()).setScreen(new SendStory());
 			}
 		});
 		final TextButton exitButton = new TextButton("Exit", skin);
@@ -133,11 +103,9 @@ public class MainMenu implements Screen {
 			}
 		});
 		
+		background = new Image(new Texture("img/sampleSplash.jpg"));
+		background.setBounds(0, 0, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
 		
-		background = new Texture("img/sampleSplash.jpg");
-		table.add(new Label("Circle list", skin)).colspan(3).expandX().spaceBottom(50).row();
-		table.add(scrollPane).uniformX().expandX().expandY().fillY().center().spaceBottom(20).row();
-		table.add(playButton).uniformX().spaceBottom(20).row();
 		table.add(addFriendsButton).uniformX().spaceBottom(20).row();
 		table.add(logButton).uniformX().spaceBottom(20).row();
 		table.add(exitButton).uniformX();
@@ -145,17 +113,6 @@ public class MainMenu implements Screen {
 		stage.addActor(table);
 		
 	}	
-	
-	private Array<String> getCircleList() {
-		if(social.isLoggedIn()) {
-			userCircles = social.getCloudCircles().getCircle();
-			return social.getCloudCircles().getDisplayInfo();
-		}
-		else {
-			userCircles = new Array<UserCircle>();
-			return new CircleList().getDisplayInfo();
-		}
-	}
 	
 	@Override
 	public void hide() {
@@ -178,7 +135,6 @@ public class MainMenu implements Screen {
 	public void dispose() {
 		stage.dispose();
 		atlas.dispose();
-		background.dispose();
 		skin.dispose();
 		batch.dispose();
 	}

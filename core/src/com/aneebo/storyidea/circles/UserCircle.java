@@ -1,23 +1,22 @@
 package com.aneebo.storyidea.circles;
 
 import static com.aneebo.storyidea.StoryIdea.social;
+
 import java.util.Calendar;
 import java.util.Date;
-import java.util.StringTokenizer;
 
 import com.aneebo.storyidea.users.SocialUser;
-import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.utils.Array;
 
 public class UserCircle {
 	
-	public static final String DELIM = "||||";
 	
 	public static final int DEFAULT_WAIT = 86400000;
 	public int ID = 0;
 	
 	private Date deadline;
-	private Array<SocialUser> activeUsers;
+	private Array<SocialUser> orderedUsers;
+	private Array<SocialUser> users;
 	private Array<String> messages;
 	private float storyLines;
 	private int index;
@@ -28,11 +27,12 @@ public class UserCircle {
 	}
 	
 	public UserCircle(Array<SocialUser> activeUsers, float storyLines, int waitTime) {
-		this.activeUsers = activeUsers;
+		this.orderedUsers = activeUsers;
+		this.users = activeUsers;
 		this.storyLines = storyLines;
 		
 		messages = new Array<String>(true, (int) storyLines, String.class);
-
+		
 		Calendar cal = Calendar.getInstance();
 		cal.setTime(new Date());
 		cal.add(Calendar.MILLISECOND, waitTime);
@@ -47,12 +47,12 @@ public class UserCircle {
 	public UserCircle() {}
 	
 	private void setupUsers() {
-		activeUsers.shuffle();
-		this.activeUsers.insert(0, social.getMeUser());
-		int start = activeUsers.size;
-		activeUsers.ensureCapacity((int) (storyLines)-activeUsers.size+1);
+		orderedUsers.shuffle();
+		this.orderedUsers.insert(0, social.getMeUser());
+		int start = orderedUsers.size;
+		orderedUsers.ensureCapacity((int) (storyLines)-orderedUsers.size+1);
 		for(int i = start; i < storyLines; i++) {
-			activeUsers.insert(i, activeUsers.items[i-start]);
+			orderedUsers.insert(i, orderedUsers.items[i-start]);
 		}
 	}
 	
@@ -73,31 +73,29 @@ public class UserCircle {
 	public SocialUser next(String message) {
 		messages.items[index] = message;
 		index++;
-		return activeUsers.items[index];
+		return orderedUsers.items[index];
 	}
 	
 	public SocialUser currentUser() {
-		return activeUsers.items[index];
+		return orderedUsers.items[index];
 	}
 	
 	public float getStoryLines() {
 		return storyLines;
 	}
 
-	public Array<SocialUser> getActiveUsers() {
-		return activeUsers;
+	public Array<SocialUser> getOrderedUsers() {
+		return orderedUsers;
+	}
+
+	public Array<String> getUserNames() {
+		Array<String> usernames = new Array<String>(false, users.size,String.class);
+		
+		for(SocialUser user : users)
+			usernames.add(user.getUsername());
+		
+		return usernames;
 	}
 	
-	public String toString() {
-		StringBuilder sb = new StringBuilder();
-		sb.append(ID).append("||||");
-		sb.append(deadline.getTime()).append("||||");
-		for(SocialUser user : activeUsers)
-			sb.append(user.getUsername()).append(",");
-		sb.deleteCharAt(sb.lastIndexOf(",")).append("||||");
-		sb.append(storyLines).append("||||");
-		sb.append(index);
-		return sb.toString();
-	}
 	
 }

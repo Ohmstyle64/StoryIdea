@@ -35,8 +35,6 @@ public class CreateCircle implements Screen {
 	private List<String> selected;
 	private Slider slider;
 	
-	private float accum = 15;
-
 	@Override
 	public void render(float delta) {
 		//Clear Screen
@@ -48,22 +46,6 @@ public class CreateCircle implements Screen {
 		stage.draw();
 		
 		Table.drawDebug(stage);
-		
-		//Refresh friendslist
-		accum+=delta;
-		if(accum >= 1) {
-			Array<String> names = userList.getUserNames();
-			
-			Array<String> selectedArray = selected.getItems();
-			for(int i = 0; i < selectedArray.size; i++) {
-				if(names.contains(selectedArray.get(i), false))
-					names.removeValue(selectedArray.get(i), false);
-			}
-			
-			friends.setItems(names);
-			accum = 0;
-		}
-		
 	}
 
 	@Override
@@ -132,6 +114,16 @@ public class CreateCircle implements Screen {
 					selected.setItems(items);
 					friends.getItems().removeValue(selectedFriend, false);
 					friends.setSelectedIndex(-1);
+					
+					
+					Array<String> names = userList.getUserNames();
+					
+					Array<String> selectedArray = selected.getItems();
+					for(int i = 0; i < selectedArray.size; i++) {
+						if(names.contains(selectedArray.get(i), false))
+							names.removeValue(selectedArray.get(i), false);
+					}
+					friends.setItems(names);
 				}
 				if(friends.getItems().size <=0 || selected.getItems().size >= 8) addFriend.setDisabled(true);
 				else removeSelected.setDisabled(false);
@@ -148,6 +140,15 @@ public class CreateCircle implements Screen {
 					friends.setItems(items);
 					selected.getItems().removeValue(selectedFriend, false);
 					selected.setSelectedIndex(-1);
+					
+					Array<String> names = userList.getUserNames();
+					
+					Array<String> selectedArray = selected.getItems();
+					for(int i = 0; i < selectedArray.size; i++) {
+						if(names.contains(selectedArray.get(i), false))
+							names.removeValue(selectedArray.get(i), false);
+					}
+					friends.setItems(names);
 				}
 				if(selected.getItems().size <=0) removeSelected.setDisabled(true);
 				else addFriend.setDisabled(false);
@@ -159,9 +160,9 @@ public class CreateCircle implements Screen {
 			@Override
 			public void changed(ChangeEvent event, Actor actor) {
 				//TODO: Add code to start a circle.
-				startCircle();
+				UserCircle uc = new UserCircle(userList.getUserSubset(selected.getItems()), slider.getVisualValue());
 				//Returns to menu
-				((Game)Gdx.app.getApplicationListener()).setScreen(new MainMenu());
+				((Game)Gdx.app.getApplicationListener()).setScreen(new WaitRoom(uc));
 			}
 		});
 		
@@ -195,12 +196,6 @@ public class CreateCircle implements Screen {
 		table.add(backButton).colspan(2);
 		stage.addActor(table);
 
-	}
-	
-	private void startCircle() {
-		//TODO: Send list to cloud
-		UserCircle uc = new UserCircle(userList.getUserSubset(selected.getItems()), slider.getVisualValue());
-		social.requestToStartCircle(uc);
 	}
 	
 	private void getUsernames() {

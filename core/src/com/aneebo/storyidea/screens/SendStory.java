@@ -7,6 +7,7 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
+import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.InputListener;
 import com.badlogic.gdx.scenes.scene2d.Stage;
@@ -16,6 +17,7 @@ import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.ui.TextArea;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
+import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.utils.Timer;
 import com.badlogic.gdx.utils.Timer.Task;
@@ -39,7 +41,9 @@ public class SendStory implements Screen {
 	public SendStory(UserCircle uc) {
 		this.uc = uc;
 	}
-	
+	//Default Constructor
+	public SendStory() {}
+
 	@Override
 	public void render(float delta) {
 		Gdx.gl.glClearColor(0, 0, 0, 1);
@@ -91,6 +95,13 @@ public class SendStory implements Screen {
 				sendMessageToSocial(storyArea.getText());				
 			}
 		});
+		final TextButton pushButton = new TextButton("PUSH", skin);
+		pushButton.addListener(new ChangeListener() {
+			@Override
+			public void changed(ChangeEvent event, Actor actor) {
+				social.sendCircleRequest();
+			}
+		});
 		storyArea.addListener(new InputListener() {
 			@Override
 			public boolean keyTyped(InputEvent event, char character) {
@@ -110,7 +121,8 @@ public class SendStory implements Screen {
 		//Set up table
 		table.add(header).colspan(3).center().row();
 		table.add(scrollPane).colspan(3).expandX().fillX().expandY().fillY().top().pad(10).row();
-		table.add(sendButton).colspan(3).bottom().center();
+		table.add(sendButton).colspan(3).bottom().center().row();
+		table.add(pushButton).colspan(3).bottom().center();
 		stage.addActor(table);
 	}
 	
@@ -120,7 +132,7 @@ public class SendStory implements Screen {
 	 */
 	public void sendMessageToSocial(String str) {
 		Gdx.input.setOnscreenKeyboardVisible(false);
-		social.sendMessage(uc, str);
+		social.sendMessage(str);
 		Timer.schedule(new Task() {
 			@Override
 			public void run() {
