@@ -2,6 +2,7 @@ package com.aneebo.storyidea.desktop.social;
 
 import com.aneebo.storyidea.social.SocialCodeI;
 import com.aneebo.storyidea.users.SocialUser;
+import com.aneebo.storyidea.users.UserList;
 import com.badlogic.gdx.utils.Array;
 
 public class SocialDesktop implements SocialCodeI {
@@ -73,8 +74,9 @@ public class SocialDesktop implements SocialCodeI {
 		return new SocialUser(0,1,"Ohmanni");
 	}
 
+
 	@Override
-	public void sendCircleRequest() {
+	public void createCircleRoom(UserList ul) {
 		// TODO Auto-generated method stub
 		
 	}
