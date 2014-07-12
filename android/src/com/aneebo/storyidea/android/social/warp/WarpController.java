@@ -1,23 +1,28 @@
 package com.aneebo.storyidea.android.social.warp;
 
 import java.util.HashMap;
-
 import com.aneebo.storyidea.StoryIdea;
 import com.aneebo.storyidea.android.AndroidLauncher;
 import com.aneebo.storyidea.android.social.SocialAndroid;
 import com.badlogic.gdx.Gdx;
 import com.shephertz.app42.gaming.multiplayer.client.WarpClient;
 import com.shephertz.app42.gaming.multiplayer.client.command.WarpResponseResultCode;
+import com.shephertz.app42.gaming.multiplayer.client.events.AllRoomsEvent;
+import com.shephertz.app42.gaming.multiplayer.client.events.AllUsersEvent;
 import com.shephertz.app42.gaming.multiplayer.client.events.ChatEvent;
 import com.shephertz.app42.gaming.multiplayer.client.events.ConnectEvent;
+import com.shephertz.app42.gaming.multiplayer.client.events.LiveUserInfoEvent;
 import com.shephertz.app42.gaming.multiplayer.client.events.LobbyData;
+import com.shephertz.app42.gaming.multiplayer.client.events.MatchedRoomsEvent;
 import com.shephertz.app42.gaming.multiplayer.client.events.MoveEvent;
 import com.shephertz.app42.gaming.multiplayer.client.events.RoomData;
+import com.shephertz.app42.gaming.multiplayer.client.events.RoomEvent;
 import com.shephertz.app42.gaming.multiplayer.client.events.UpdateEvent;
 import com.shephertz.app42.gaming.multiplayer.client.listener.ChatRequestListener;
 import com.shephertz.app42.gaming.multiplayer.client.listener.ConnectionRequestListener;
 import com.shephertz.app42.gaming.multiplayer.client.listener.NotifyListener;
 import com.shephertz.app42.gaming.multiplayer.client.listener.TurnBasedRoomListener;
+import com.shephertz.app42.gaming.multiplayer.client.listener.ZoneRequestListener;
 
 public class WarpController {
 	
@@ -31,6 +36,7 @@ public class WarpController {
 	private CircleNotficationListener notficationListener = new CircleNotficationListener();
 	private CircleChatRequestListener chatListener = new CircleChatRequestListener();
 	private CircleTurnBasedRoomListener turnBasedRoomListener = new CircleTurnBasedRoomListener();
+	private CircleZoneRequestListener zoneRequestListener = new CircleZoneRequestListener();
 	
 	private WarpController(SocialAndroid sa) {
 		this.sa = sa;
@@ -39,6 +45,7 @@ public class WarpController {
 		warpClient.addNotificationListener(notficationListener);
 		warpClient.addChatRequestListener(chatListener);
 		warpClient.addTurnBasedRoomListener(turnBasedRoomListener);
+		warpClient.addZoneRequestListener(zoneRequestListener);
 	}
 
 	private void initWarp() {
@@ -55,6 +62,53 @@ public class WarpController {
 			warpController = new WarpController(sa);
 		}
 		return warpController;
+	}
+	
+	public class CircleZoneRequestListener implements ZoneRequestListener {
+
+		@Override
+		public void onCreateRoomDone(RoomEvent arg0) {
+			// TODO Auto-generated method stub
+			Gdx.app.log(StoryIdea.TITLE, "Room Created!: "+arg0.getData().getName());
+			sa.sendRoomID(arg0.getData().getId());
+		}
+
+		@Override
+		public void onDeleteRoomDone(RoomEvent arg0) {
+			// TODO Auto-generated method stub
+			
+		}
+
+		@Override
+		public void onGetAllRoomsDone(AllRoomsEvent arg0) {
+			// TODO Auto-generated method stub
+			
+		}
+
+		@Override
+		public void onGetLiveUserInfoDone(LiveUserInfoEvent arg0) {
+			// TODO Auto-generated method stub
+			
+		}
+
+		@Override
+		public void onGetMatchedRoomsDone(MatchedRoomsEvent arg0) {
+			// TODO Auto-generated method stub
+			
+		}
+
+		@Override
+		public void onGetOnlineUsersDone(AllUsersEvent arg0) {
+			// TODO Auto-generated method stub
+			
+		}
+
+		@Override
+		public void onSetCustomUserDataDone(LiveUserInfoEvent arg0) {
+			// TODO Auto-generated method stub
+			
+		}
+		
 	}
 	
 	public class CircleTurnBasedRoomListener implements TurnBasedRoomListener {
@@ -115,19 +169,6 @@ public class WarpController {
 
 		@Override
 		public void onSendPrivateChatDone(byte arg0) {
-			if(arg0!=WarpResponseResultCode.SUCCESS) {
-				switch(arg0) {
-				case WarpResponseResultCode.AUTH_ERROR :
-					break;
-				case WarpResponseResultCode.CONNECTION_ERROR :
-					break;
-				case WarpResponseResultCode.BAD_REQUEST :
-					break;
-				default :
-				}
-			}
-			else {
-			}
 				
 		}
 		
@@ -167,8 +208,7 @@ public class WarpController {
 		@Override
 		public void onRoomCreated(RoomData arg0) {
 			// TODO Auto-generated method stub
-			Gdx.app.log(StoryIdea.TITLE, "Room Created!: "+arg0.getName());
-			
+
 		}
 
 		@Override
@@ -193,7 +233,7 @@ public class WarpController {
 		@Override
 		public void onUserJoinedLobby(LobbyData arg0, String arg1) {
 			// TODO Auto-generated method stub
-			
+			Gdx.app.log(StoryIdea.TITLE, arg1+" Joined!");
 		}
 
 		@Override

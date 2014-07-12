@@ -3,12 +3,19 @@ package com.aneebo.storyidea.android.social;
 import java.util.List;
 
 import android.app.Activity;
+import android.view.Gravity;
+import android.widget.Toast;
 
+import com.aneebo.storyidea.Constants;
+import com.aneebo.storyidea.StoryIdea;
 import com.aneebo.storyidea.android.AndroidLauncher;
 import com.aneebo.storyidea.android.App42Registration;
+import com.aneebo.storyidea.android.social.packets.Packet;
 import com.aneebo.storyidea.android.social.warp.WarpController;
 import com.aneebo.storyidea.social.SocialCodeI;
 import com.aneebo.storyidea.users.SocialUser;
+import com.aneebo.storyidea.users.UserList;
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.Json;
 import com.shephertz.app42.paas.sdk.android.App42API;
@@ -21,25 +28,39 @@ import com.swarmconnect.delegates.SwarmLoginListener;
 public class SocialAndroid implements SocialCodeI {
 	public SocialUser meUser;
 	
-	private Activity activity;
+	private AndroidLauncher activity;
 	private Array<SocialUser> friends;
 	private WarpController warpController;
 	private App42Registration app42Registration;
 	
 	private static SocialAndroid instance;
+	
+	private Array<String> acceptedUsers;
+	private Array<String> pendingUsers;
+	
+	private int totalInvites;
+	private boolean creatingCircle;
+	
+	private String roomID;
 
-	private SocialAndroid(Activity activity) {
+	private SocialAndroid(AndroidLauncher activity) {
 		this.activity = activity;
 		friends = new Array<SocialUser>(false,20,SocialUser.class);
+		acceptedUsers = new Array<String>(false,1,String.class);
+		creatingCircle = false;
+		totalInvites = 0;
 	}
 	
-	public static SocialAndroid getInstance(Activity activity) {
+	public static SocialAndroid getInstance(AndroidLauncher activity) {
 		if(instance==null) {
 			instance = new SocialAndroid(activity);
 		}
 		return instance;
 	}
 	
+	public static SocialAndroid getInstance() {
+		return instance;
+	}
 	
 	@Override
 	public void login() {
@@ -109,16 +130,15 @@ public class SocialAndroid implements SocialCodeI {
 					App42API.initialize(activity, AndroidLauncher.API_KEY, AndroidLauncher.PVT_KEY);
 					App42API.setLoggedInUser(arg0.username);
 					app42Registration = new App42Registration(activity);
+					getFriends();
 				}
 				
 				@Override
 				public void loginStarted() {
-					// TODO Auto-generated method stub
 				}
 				
 				@Override
 				public void loginCanceled() {
-					// TODO Auto-generated method stub
 					
 				}
 			});
@@ -141,14 +161,67 @@ public class SocialAndroid implements SocialCodeI {
 		return meUser;
 	}
 	
-	public Activity getActivit() {
+	public Activity getActivity() {
 		return activity;
+	}
+	
+	public void sendRoomID(String roomID) {
+		this.roomID = roomID;
+		warpController.warpClient.subscribeRoom(roomID);
+		if(pendingUsers != null) {
+			for(String user : pendingUsers) {
+				sendCircleRequest(user, roomID);
+			}
+		}
+	}
+	
+	// Helper method for sending requests
+	private void sendCircleRequest(String username, String roomID) {
+		Json json = new Json();
+		Packet packet = new Packet(Constants.CIRCLE_REQUEST);
+		packet.requester = meUser.getUsername();
+		app42Registration.sendMessage(username, json.toJson(packet, Packet.class));
+		Gdx.app.log(StoryIdea.TITLE, json.toJson(packet, Packet.class));
+	}
+	
+	public void sendCircleResponse(String username, boolean accepted) {
+		Json json = new Json();
+		Packet packet = new Packet(Constants.CIRCLE_RESPONSE);
+		packet.responder = meUser.getUsername();
+		packet.accepted = accepted;
+		app42Registration.sendMessage(meUser.getUsername(), json.toJson(packet, Packet.class));
+	}
+	
+	public void addAccepted(String username) {
+		acceptedUsers.add(username);
+		acceptedUsers.shrink();
+		if(acceptedUsers.size >= totalInvites && creatingCircle) {
+			
+		}
+	}
+	
+	public void Decline() {
+		totalInvites = 0;
+		creatingCircle = false;
+		acceptedUsers.clear();
+		Gdx.app.log(StoryIdea.TITLE, "Circle failed to launch");
+		activity.toast.setGravity(Gravity.CENTER, 0, 0);
+		activity.toast.setText("Your Circle Was Declined! Need to create another circle!");
+		activity.toast.show();
 	}
 
 	@Override
-	public void sendCircleRequest() {
-		Json json = new Json();
-		app42Registration.sendMessage(meUser.getUsername(), "This worked!");
+	public void createCircleRoom(UserList ul) {
+		Array<String> temp = new Array<String>(false, 1, String.class);
+		temp.add(meUser.getUsername());
+		pendingUsers = temp;
+		Gdx.app.log(StoryIdea.TITLE, "Creating Room!");
+		warpController.warpClient.createTurnRoom(meUser.getUsername(), meUser.getUsername(), pendingUsers.size, null, 30);
+		totalInvites = pendingUsers.size;
+		creatingCircle = true;
 	}
-
+	
+	public WarpController getWarpController() {
+		return warpController;
+	}
 }

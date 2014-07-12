@@ -1,27 +1,25 @@
 package com.aneebo.storyidea.android;
 
-import android.content.Context;
+import android.annotation.SuppressLint;
+import android.content.Intent;
 import android.os.Bundle;
-import android.telephony.TelephonyManager;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
 import android.widget.RelativeLayout;
+import android.widget.Toast;
 
 import com.aneebo.storyidea.StoryIdea;
 import com.aneebo.storyidea.android.social.SocialAndroid;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.backends.android.AndroidApplication;
 import com.badlogic.gdx.backends.android.AndroidApplicationConfiguration;
-import com.google.android.gms.ads.AdRequest;
-import com.google.android.gms.ads.AdSize;
-import com.google.android.gms.ads.AdView;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GooglePlayServicesUtil;
 import com.swarmconnect.Swarm;
 
+@SuppressLint("ShowToast")
 public class AndroidLauncher extends AndroidApplication {
-	
 	
 	public static final int MY_APP_D = 11620;
 	public static final String SWARM_ID = "4e7484e2903dfa74fd2de6d0cca9bfd7";
@@ -30,12 +28,15 @@ public class AndroidLauncher extends AndroidApplication {
 	public static final String GOOGLE_PROJECT_ID = "948480805556";
 	
 	private static final String AD_ID = "ca-app-pub-5851825395455390/3467746466";
-	private final static int PLAY_SERVICES_RESOLUTION_REQUEST = 9000;	
+	private final static int PLAY_SERVICES_RESOLUTION_REQUEST = 9000;
+	
+	public Toast toast;
 	
 	@Override
 	protected void onCreate (Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		
+		toast = Toast.makeText(this, "", Toast.LENGTH_SHORT);
 		AndroidApplicationConfiguration config = new AndroidApplicationConfiguration();
 		config.useWakelock = true;
 		config.useCompass = false;
@@ -51,47 +52,42 @@ public class AndroidLauncher extends AndroidApplication {
         getWindow().clearFlags(WindowManager.LayoutParams.FLAG_FORCE_NOT_FULLSCREEN);
 
         //Check that Google Play Services is working
-        if(!checkPlayService()){
-        	Gdx.app.log(StoryIdea.TITLE, "No google play services");
-        	Gdx.app.exit();
-        }
+        checkPlayService();
         // Create the libgdx View
         View gameView = initializeForView(new StoryIdea(SocialAndroid.getInstance(this))); 
         
         // Create AdView
-        AdView adView = new AdView(this);
-        adView.setAdSize(AdSize.BANNER);
-        adView.setAdUnitId(AD_ID);
-        
-        final TelephonyManager tm =(TelephonyManager)getBaseContext().getSystemService(Context.TELEPHONY_SERVICE);
-        String deviceid = tm.getDeviceId();
-        
-        AdRequest adRequest = new AdRequest.Builder()
-        .addTestDevice(AdRequest.DEVICE_ID_EMULATOR)
-        .addTestDevice(deviceid)
-        .build();
-        
-        adView.loadAd(adRequest);
+//        AdView adView = new AdView(this);
+//        adView.setAdSize(AdSize.BANNER);
+//        adView.setAdUnitId(AD_ID);
+//        
+//        final TelephonyManager tm =(TelephonyManager)getBaseContext().getSystemService(Context.TELEPHONY_SERVICE);
+//        String deviceid = tm.getDeviceId();
+//        
+//        AdRequest adRequest = new AdRequest.Builder()
+//        .addTestDevice(AdRequest.DEVICE_ID_EMULATOR)
+//        .addTestDevice(deviceid)
+//        .build();
+//        
+//        adView.loadAd(adRequest);
         
         // Add Libgdx View
         layout.addView(gameView);
         
         // Add the AdMob view
-        RelativeLayout.LayoutParams adParams = 
-                new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.WRAP_CONTENT, 
-                                RelativeLayout.LayoutParams.WRAP_CONTENT);
-        adParams.addRule(RelativeLayout.ALIGN_PARENT_TOP);
-        adParams.addRule(RelativeLayout.CENTER_IN_PARENT);
-
-        layout.addView(adView, adParams);
+//        RelativeLayout.LayoutParams adParams = 
+//                new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.MATCH_PARENT, 
+//                                RelativeLayout.LayoutParams.WRAP_CONTENT);
+//        adParams.addRule(RelativeLayout.ALIGN_PARENT_TOP);
+//        adParams.addRule(RelativeLayout.CENTER_IN_PARENT);
+//
+//        layout.addView(adView, adParams);
         
         // Hook it all up
         setContentView(layout);
         
 		//Android workaround for softkeyboard
 		AndroidBug5497Workaround.assistActivity(this);
-		
-		
 	}
 	
 	@Override
@@ -108,7 +104,7 @@ public class AndroidLauncher extends AndroidApplication {
 		checkPlayService();
 	}
 	
-	private boolean checkPlayService() {
+	private void checkPlayService() {
 		int resultCode = GooglePlayServicesUtil.isGooglePlayServicesAvailable(this);
 	    if (resultCode != ConnectionResult.SUCCESS) {
 	        if (GooglePlayServicesUtil.isUserRecoverableError(resultCode)) {
@@ -117,9 +113,12 @@ public class AndroidLauncher extends AndroidApplication {
 	        } else {
 	            finish();
 	        }
-	        return false;
 	    }
-	    return true;	    
 	}
 	
+	@Override
+	protected void onNewIntent(Intent intent) {
+		super.onNewIntent(intent);
+		//TODO: Implement dialog box for accepting circle request
+	}
 }
