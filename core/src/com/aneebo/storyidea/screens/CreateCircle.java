@@ -45,7 +45,7 @@ public class CreateCircle implements Screen {
 		stage.act(delta);
 		stage.draw();
 		
-		Table.drawDebug(stage);
+		Table.drawDebug(stage);		
 	}
 
 	@Override
@@ -160,7 +160,10 @@ public class CreateCircle implements Screen {
 			@Override
 			public void changed(ChangeEvent event, Actor actor) {
 				//TODO: Add code to start a circle.
-				UserCircle uc = new UserCircle(userList.getUserSubset(selected.getItems()), slider.getVisualValue());
+				Array<SocialUser> users = userList.getUserSubset(selected.getItems());
+				UserList subList = new UserList(users);
+				social.createCircleRoom(subList);			
+				UserCircle uc = new UserCircle(users, slider.getVisualValue());
 				//Returns to menu
 				((Game)Gdx.app.getApplicationListener()).setScreen(new WaitRoom(uc));
 			}

@@ -36,10 +36,10 @@ public class SendStory implements Screen {
 	private String messageTyped;
 	private String savedText;
 	
-	private UserCircle uc;
+	private String user;
 	
-	public SendStory(UserCircle uc) {
-		this.uc = uc;
+	public SendStory(String user) {
+		this.user = user;
 	}
 	//Default Constructor
 	public SendStory() {}
@@ -95,13 +95,6 @@ public class SendStory implements Screen {
 				sendMessageToSocial(storyArea.getText());				
 			}
 		});
-		final TextButton pushButton = new TextButton("PUSH", skin);
-		pushButton.addListener(new ChangeListener() {
-			@Override
-			public void changed(ChangeEvent event, Actor actor) {
-				social.sendCircleRequest();
-			}
-		});
 		storyArea.addListener(new InputListener() {
 			@Override
 			public boolean keyTyped(InputEvent event, char character) {
@@ -122,7 +115,6 @@ public class SendStory implements Screen {
 		table.add(header).colspan(3).center().row();
 		table.add(scrollPane).colspan(3).expandX().fillX().expandY().fillY().top().pad(10).row();
 		table.add(sendButton).colspan(3).bottom().center().row();
-		table.add(pushButton).colspan(3).bottom().center();
 		stage.addActor(table);
 	}
 	

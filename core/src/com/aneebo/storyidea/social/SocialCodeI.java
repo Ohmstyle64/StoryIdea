@@ -1,7 +1,7 @@
 package com.aneebo.storyidea.social;
 
-import com.aneebo.storyidea.circles.UserCircle;
 import com.aneebo.storyidea.users.SocialUser;
+import com.aneebo.storyidea.users.UserList;
 import com.badlogic.gdx.utils.Array;
 
 public interface SocialCodeI {
@@ -16,8 +16,5 @@ public interface SocialCodeI {
 	public void showDashboard();
 	//TODO:Remove
 	public SocialUser getMeUser();
-	public void sendCircleRequest();
-	
-	
-	
+	public void createCircleRoom(UserList ul);	
 }

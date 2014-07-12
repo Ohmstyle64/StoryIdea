@@ -92,7 +92,7 @@ public class MainMenu implements Screen {
 		addFriendsButton.addListener(new ClickListener() {
 			@Override
 			public void clicked(InputEvent event, float x, float y) {
-				((StoryIdea)Gdx.app.getApplicationListener()).setScreen(new SendStory());
+				((StoryIdea)Gdx.app.getApplicationListener()).setScreen(new CreateCircle());
 			}
 		});
 		final TextButton exitButton = new TextButton("Exit", skin);
